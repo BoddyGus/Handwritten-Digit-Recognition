@@ -1,0 +1,7 @@
+## Week 1 Report
+
+1. During the first week, I initialized the repository, made some progress on the specification document and would love to hear the teacher's feedback on it.
+2. Because I have not written any code yet, the code hasn't progressed at all.
+3. I have not learned anything new this week. The algorithms in the specification document are known to me to some extent already from KOMP2 course in University of Helsinki (Basics of Mathematics in Machine Learning 2). Also, because I have completed most of the courses on Kaggle, which is a good platform to study machine-learning-related material, I am quite familiar with the topic itself. Once again, I would love to hear teacher's feedback on what other materials I could read besides the ones I intend to read (listed in the Sources block in specification document).
+4. The most challenging part was to put the main algorithms into words and showcase a possible workflow for solving my problem. If there are any comments on how to improve my phrasing or any problems with the workflow itself I would love to hear about them as soon as possible from the teacher.
+5. My next step will be to read through several chapters in Michael Nielsen's material. Also, I plan to revise old materials provided in KOMP2 course. I will try to implement backpropagation as well as forward-pass functionality using NumPy (will probably have to revise its usage since PyTorch is not allowed).
