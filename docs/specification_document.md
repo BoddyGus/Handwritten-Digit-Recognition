@@ -61,8 +61,8 @@ The main data structures are going to be NumPy arrays. Matrices for the image da
 ## Time and Space Complexity
 
 Let us define some variables for simplicity:
-1. $N$  - number of training images,
-2. $K$ = 784 - number of input values per image ()
+1. $N$  - the number of training images,
+2. $K$ = 784 - the number of input values per image ()
 3. $L$ - the number of neurons in one hidden layer.
 
 
@@ -76,9 +76,7 @@ If the network is trained for $E$ epochs with the use of all $N$ training images
 The space complexity of weights and biases is approximately $O(KL + L \cdot 10)$.
 
 Now, if all images that are used for training are stored in memory, then the dataset would require $O(NK)$ space. So the total space complexity would be:
-$$
-O(NK + KL + L \cdot 10).
-$$
+$O(NK + KL + L \cdot 10).$
 
 
 ## Sources that will be used
