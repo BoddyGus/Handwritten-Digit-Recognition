@@ -3,7 +3,7 @@ name = "handwritten-digit-recognition"
 version = "0.1.0"
 description = "Handwritten digit recognition using NumPy"
 authors = [
-    {name = "BoddyGus",email = "yan.dulin06@gmail.com"}
+    {name = "BoddyGus", email = "yan.dulin06@gmail.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.14"
@@ -11,6 +11,10 @@ dependencies = [
     "numpy (>=2.5.3,<3.0.0)"
 ]
 
+[tool.poetry]
+packages = [
+    { include = "digits", from = "src" }
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

@@ -32,7 +32,7 @@ class Network:
             for curr_size, next_size in zip(layer_sizes[:-1], layer_sizes[1:])
         ]
 
-        self.biases = [self.rng.normal(size, 1) for size in layer_sizes[1:]]
+        self.biases = [self.rng.normal(size=(size, 1)) for size in layer_sizes[1:]]
 
     def forward(self, x):
         """Returns output of the network for one input vector (x)."""
