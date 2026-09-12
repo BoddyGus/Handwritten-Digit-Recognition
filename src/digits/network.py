@@ -28,11 +28,11 @@ class Network:
         self.rng = np.random.default_rng(seed)
 
         self.weights = [
-            self.rng.normal(size=(next_size, curr_size))
+            self.rng.normal(scale=1.0 / np.sqrt(curr_size), size=(next_size, curr_size))
             for curr_size, next_size in zip(layer_sizes[:-1], layer_sizes[1:])
         ]
 
-        self.biases = [self.rng.normal(size=(size, 1)) for size in layer_sizes[1:]]
+        self.biases = [np.zeros((size, 1)) for size in layer_sizes[1:]]
 
     def forward(self, x):
         """Returns output of the network for one input vector (x)."""
