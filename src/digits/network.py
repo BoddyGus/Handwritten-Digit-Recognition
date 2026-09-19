@@ -29,6 +29,14 @@ def cross_entropy(logits, target):
     loss = log_sum_exp - np.sum(target * logits, axis=0, keepdims=True)
     return float(np.squeeze(loss))
 
+def evaluate(self, test_data):
+    """Returns how many correctly classified examples there are"""
+    correct = 0
+    for x, label in test_data:
+        pred = np.argmax(self.forward(x))
+        correct += int(pred == label)
+    return correct
+
 class Network:
     """A small feed-forward network."""
 
@@ -106,4 +114,17 @@ class Network:
         for id in range(len(self.weights)):
             self.weights[id] -= eta * nabla_w[id] / batch_size
             self.biases[id] -= eta * nabla_b[id] / batch_size
-            
+
+    def SGD(self, training_data, epochs, mini_batch_size, eta, test_data=None):
+        """Network training using mini-batch SGD"""
+        training_data = list(training_data)
+        for epoch in range(epochs):
+            shuffled_data = [training_data[id] for id in self.rng.permutation(len(training_data))]
+            mini_batches = [shuffled_data[start:start + mini_batch_size] for start in range(0, len(shuffled_data), mini_batch_size)]
+            for mini_batch in mini_batches:
+                self.update_mini_batch(mini_batch, eta)
+            if test_data is not None:
+                print(f"Epoch {epoch}: {self.evaluate(test_data)} / {len(test_data)}")
+            else:
+                print(f"Epoch {epoch} complete")
+

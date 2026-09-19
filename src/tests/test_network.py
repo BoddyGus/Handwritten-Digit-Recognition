@@ -63,6 +63,7 @@ def test_cross_entropy_known_value():
     result = cross_entropy(logits, target)
     expected = -np.log(0.66524096)
     assert result == pytest.approx(expected)
+
 def test_forward_output_shape():
     network = Network([2, 3, 2], seed=42)
     input_vector = np.array([[0.4], [0.9]])
