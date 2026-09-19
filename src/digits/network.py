@@ -19,6 +19,16 @@ def softmax(logits):
     exponentials = np.exp(shift_logits)
     return exponentials / np.sum(exponentials, axis=0, keepdims=True)
 
+def cross_entropy(logits, target):
+    """A softmax cross-entropy function (numerically stable version) for one example """
+    logits = np.asarray(logits, dtype=float)
+    target = np.asarray(target, dtype=float)
+    maximum = np.max(logits, axis=0, keepdims=True)
+    shift_logits = logits - maximum
+    log_sum_exp = maximum + np.log(np.sum(np.exp(shift_logits), axis=0, keepdims=True))
+    loss = log_sum_exp - np.sum(target * logits, axis=0, keepdims=True)
+    return float(np.squeeze(loss))
+
 class Network:
     """A small feed-forward network."""
 
