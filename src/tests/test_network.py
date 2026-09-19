@@ -57,7 +57,7 @@ def test_softmax_sum_of_probabilities_is_one():
     result = softmax(logits)
     assert np.sum(result) == pytest.approx(1.0)
 
-def test_cross_entropy_known_value():
+def test_cross_entropy_compared_to_known_values():
     logits = np.array([[1.0], [2.0], [3.0]])
     target = np.array([[0.0], [0.0], [1.0]])
     result = cross_entropy(logits, target)

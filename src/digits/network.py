@@ -29,14 +29,6 @@ def cross_entropy(logits, target):
     loss = log_sum_exp - np.sum(target * logits, axis=0, keepdims=True)
     return float(np.squeeze(loss))
 
-def evaluate(self, test_data):
-    """Returns how many correctly classified examples there are"""
-    correct = 0
-    for x, label in test_data:
-        pred = np.argmax(self.forward(x))
-        correct += int(pred == label)
-    return correct
-
 class Network:
     """A small feed-forward network."""
 
@@ -127,4 +119,11 @@ class Network:
                 print(f"Epoch {epoch}: {self.evaluate(test_data)} / {len(test_data)}")
             else:
                 print(f"Epoch {epoch} complete")
+    def evaluate(self, test_data):
+        """Returns how many correctly classified examples there are"""
+        correct = 0
+        for x, label in test_data:
+            pred = np.argmax(self.forward(x))
+            correct += int(pred == label)
+        return correct
 
