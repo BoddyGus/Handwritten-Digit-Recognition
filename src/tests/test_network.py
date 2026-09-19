@@ -84,6 +84,7 @@ def test_backpropagation_shapes_of_gradients():
     for grad, weight in zip(grads_w, network.weights):
         assert grad.shape == weight.shape
         assert np.all(np.isfinite(grad))
+
 def test_update_mini_batch_change_weights():
     network = Network([2, 3, 2], seed=42)
     mini_batch = [
@@ -95,6 +96,16 @@ def test_update_mini_batch_change_weights():
     network.update_mini_batch(mini_batch, eta=0.1)
     assert any(not np.allclose(old, new) for old, new in zip(old_weights, network.weights))
     assert any(not np.allclose(old, new) for old, new in zip(old_biases, network.biases))
+
+def test_sgd_updates_weights():
+    network = Network([2, 4, 2], seed=42)
+    training_data = [
+        (np.array([[0.2], [0.7]]), np.array([[1.0], [0.0]])),
+        (np.array([[0.8], [0.1]]), np.array([[0.0], [1.0]])),
+    ]
+    old_weights = [weight.copy() for weight in network.weights]
+    network.SGD(training_data, epochs=2, mini_batch_size=1, eta=0.1)
+    assert any(not np.allclose(old, new) for old, new in zip(old_weights, network.weights))
 
 def test_forward_output_shape():
     network = Network([2, 3, 2], seed=42)
