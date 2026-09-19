@@ -71,9 +71,22 @@ def test_cross_entropy_numerical_stability():
     assert np.isfinite(result)
     assert result == pytest.approx(0.0)
 
+def test_backpropagation_shapes_of_gradients():
+    network = Network([3,3,2], seed=42)
+    x = np.array([[0.1], [0.2], [0.3]])
+    y = np.array([[0.0], [1.0]])
+    grads_b, grads_w = network.backpropagation(x, y)
+    assert len(grads_b) == len(network.biases)
+    assert len(grads_w) == len(network.weights)
+    for grad, bias in zip(grads_b, network.biases):
+        assert grad.shape == bias.shape
+        assert np.all(np.isfinite(grad))
+    for grad, weight in zip(grads_w, network.weights):
+        assert grad.shape == weight.shape
+        assert np.all(np.isfinite(grad))
+
 def test_forward_output_shape():
     network = Network([2, 3, 2], seed=42)
     input_vector = np.array([[0.4], [0.9]])
     result = network.forward(input_vector)
     assert result.shape == (2, 1)
-
