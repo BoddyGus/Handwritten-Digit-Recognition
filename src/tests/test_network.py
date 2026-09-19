@@ -64,6 +64,13 @@ def test_cross_entropy_compared_to_known_values():
     expected = -np.log(0.66524096)
     assert result == pytest.approx(expected)
 
+def test_cross_entropy_numerical_stability():
+    logits = np.array([[-1000.0], [0.0], [1000.0]])
+    target = np.array([[0.0], [0.0], [1.0]])
+    result = cross_entropy(logits, target)
+    assert np.isfinite(result)
+    assert result == pytest.approx(0.0)
+
 def test_forward_output_shape():
     network = Network([2, 3, 2], seed=42)
     input_vector = np.array([[0.4], [0.9]])
