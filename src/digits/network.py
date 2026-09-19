@@ -82,5 +82,13 @@ class Network:
         nabla_b[-1] = delta
         nabla_w[-1] = delta @ activations[-2].T
 
+        # Caclulating hidden-layer errors
+        for layer_id in range(2, len(self.weights) + 1):
+            z = weighted_inputs[-layer_id]
+            hidden_activation = sigmoid(z)
+            sigmoid_derivative = hidden_activation * (1.0 - hidden_activation)
+            delta = (self.weights[-layer_id + 1].T @ delta * sigmoid_derivative)
+            nabla_b[-layer_id] = delta
+            nabla_w[-layer_id] = (delta @ activations[-layer_id - 1].T)
 
-
+        return nabla_b, nabla_w
