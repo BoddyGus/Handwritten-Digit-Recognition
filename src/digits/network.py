@@ -58,7 +58,7 @@ class Network:
         return activation
 
     def backpropagation(self, x, y):
-        """Returs gradients for one training example"""
+        """Returns gradients for one training example"""
         nabla_w = [np.zeros_like(weight) for weight in self.weights]
         nabla_b = [np.zeros_like(bias) for bias in self.biases]
         activation = x
@@ -85,10 +85,25 @@ class Network:
         # Caclulating hidden-layer errors
         for layer_id in range(2, len(self.weights) + 1):
             z = weighted_inputs[-layer_id]
-            hidden_activation = sigmoid(z)
+            hidden_activation = activations[-layer_id]
             sigmoid_derivative = hidden_activation * (1.0 - hidden_activation)
             delta = (self.weights[-layer_id + 1].T @ delta * sigmoid_derivative)
             nabla_b[-layer_id] = delta
             nabla_w[-layer_id] = (delta @ activations[-layer_id - 1].T)
 
         return nabla_b, nabla_w
+
+    def update_mini_batch(self, mini_batch, eta):
+        """Update weights (parameters) using one mini-batch"""
+        nabla_w = [np.zeros_like(weight) for weight in self.weights]
+        nabla_b = [np.zeros_like(bias) for bias in self.biases]
+        for x, y in mini_batch:
+            delta_b, delta_w = self.backpropagation(x, y)
+            for index in range(len(nabla_b)):
+                nabla_b[index] += delta_b[index]
+                nabla_w[index] += delta_w[index]
+        batch_size = len(mini_batch)
+        for id in range(len(self.weights)):
+            self.weights[id] -= eta * nabla_w[id] / batch_size
+            self.biases[id] -= eta * nabla_b[id] / batch_size
+            
