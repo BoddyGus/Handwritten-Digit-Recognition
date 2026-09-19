@@ -33,3 +33,10 @@ Run only the network tests:
 ```bash
 poetry run pytest src/tests/test_network.py
 ```
+
+## Running Training
+
+Run the training from the project root:
+```bash
+poetry run python -m digits.train
+```
