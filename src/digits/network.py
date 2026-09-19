@@ -56,3 +56,31 @@ class Network:
                 activation = logits
 
         return activation
+
+    def backpropagation(self, x, y):
+        """Returs gradients for one training example"""
+        nabla_w = [np.zeros_like(weight) for weight in self.weights]
+        nabla_b = [np.zeros_like(bias) for bias in self.biases]
+        activation = x
+        activations = [activation]
+        weighted_inputs = []
+
+        # Forward pass
+        for layer_id, (weight, bias) in enumerate(zip(self.weights, self.biases)):
+            z = weight @ activation + bias
+            weighted_inputs.append(z)
+            if layer_id < len(self.weights) - 1:
+                activation = sigmoid(z)
+            else:
+                activation = z
+            activations.append(activation)
+
+        # Error of an output for softmax + cross-entropy
+        probabilities = softmax(activations[-1])
+        delta = probabilities - y
+
+        nabla_b[-1] = delta
+        nabla_w[-1] = delta @ activations[-2].T
+
+
+
