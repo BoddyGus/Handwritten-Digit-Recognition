@@ -12,7 +12,7 @@ def test_sigmoid_compared_to_known_values():
         0.73105858,
         0.26894142,
     ])
-    np.testing.assert_allclose(result, expected)
+    assert result == pytest.approx(expected)
 
 def test_sigmoid_numerical_stability():
     values = np.array([-1000.0, 0, 1000.0])
@@ -36,14 +36,14 @@ def test_softmax_compared_to_known_values():
         [0.24472847],
         [0.66524096],
     ])
-    np.testing.assert_allclose(result, expected)
+    assert result == pytest.approx(expected)
 
 def test_softmax_numerical_stability():
     logits = np.array([[-1000.0], [0.0], [1000.0]])
     result = softmax(logits)
     expected = np.array([[0.0], [0.0], [1.0]])
     assert np.all(np.isfinite(result))
-    np.testing.assert_allclose(result, expected, atol=1e-12)
+    assert result == pytest.approx(expected, abs=1e-12)
 
 def test_softmax_within_correct_interval():
     logits = np.array([[-1000.0], [0.0], [1000.0]])
@@ -172,6 +172,6 @@ def test_sample_order_does_not_change_predictions():
     initial_predictions = [network.forward(x) for x in samples]
     shuffled_samples = [samples[2], samples[0], samples[1]]
     shuffled_predictions = [network.forward(x) for x in shuffled_samples]
-    np.testing.assert_allclose(shuffled_predictions[1], initial_predictions[0])
-    np.testing.assert_allclose(shuffled_predictions[2], initial_predictions[1])
-    np.testing.assert_allclose(shuffled_predictions[0], initial_predictions[2])
+    assert shuffled_predictions[1] == pytest.approx(initial_predictions[0])
+    assert shuffled_predictions[2] == pytest.approx(initial_predictions[1])
+    assert shuffled_predictions[0] == pytest.approx(initial_predictions[2])
