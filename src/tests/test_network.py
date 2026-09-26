@@ -85,17 +85,25 @@ def test_backpropagation_shapes_of_gradients():
         assert grad.shape == weight.shape
         assert np.all(np.isfinite(grad))
 
-def test_update_mini_batch_change_weights():
+def test_all_layers_change_after_update():
     network = Network([2, 3, 2], seed=42)
+
     mini_batch = [
-        (np.array([[0.2], [0.7]]), np.array([[1.0], [0.0]])),
-        (np.array([[0.8], [0.1]]), np.array([[0.0], [1.0]]))
+        (np.array([[0.1], [0.7]]), np.array([[1.0], [0.0]])
+        ),
+        (
+            np.array([[0.6], [0.1]]),
+            np.array([[0.0], [1.0]])
+        ),
     ]
     old_weights = [weight.copy() for weight in network.weights]
     old_biases = [bias.copy() for bias in network.biases]
     network.update_mini_batch(mini_batch, eta=0.1)
-    assert any(not np.allclose(old, new) for old, new in zip(old_weights, network.weights))
-    assert any(not np.allclose(old, new) for old, new in zip(old_biases, network.biases))
+    for old, new in zip(old_weights, network.weights):
+        assert not np.allclose(old, new)
+
+    for old, new in zip(old_biases, network.biases):
+        assert not np.allclose(old, new)
 
 def test_sgd_updates_weights():
     network = Network([2, 4, 2], seed=42)
@@ -112,3 +120,58 @@ def test_forward_output_shape():
     input_vector = np.array([[0.4], [0.9]])
     result = network.forward(input_vector)
     assert result.shape == (2, 1)
+
+def test_network_can_overfit_small_dataset():
+    network = Network([2, 4, 2], seed=42)
+    training_data = [
+        (np.array([[0.0], [0.0]]), np.array([[1.0], [0.0]])),
+        (np.array([[0.0], [1.0]]), np.array([[1.0], [0.0]])),
+        (np.array([[1.0], [0.0]]), np.array([[0.0], [1.0]])),
+        (np.array([[1.0], [1.0]]), np.array([[0.0], [1.0]])),
+    ]
+    for _ in range(1000):
+        network.update_mini_batch(training_data, eta=1.0)
+
+    correct = 0
+    for x, target in training_data:
+        prediction = np.argmax(network.forward(x))
+        expected = np.argmax(target)
+        correct += int(prediction == expected)
+    accuracy = correct / len(training_data)
+    assert accuracy == 1.0
+
+def test_training_reduces_loss():
+    network = Network([2, 4, 2], seed=42)
+    training_data = [
+        (np.array([[0.0], [0.0]]), np.array([[1.0], [0.0]])),
+        (np.array([[0.0], [1.0]]), np.array([[1.0], [0.0]])),
+        (np.array([[1.0], [0.0]]), np.array([[0.0], [1.0]])),
+        (np.array([[1.0], [1.0]]), np.array([[0.0], [1.0]])),
+    ]
+    def loss():
+        losses = []
+        for x, target in training_data:
+            losses.append(cross_entropy(network.forward(x), target))
+
+        return np.mean(losses)
+    start_loss = loss()
+    for _ in range(100):
+        network.update_mini_batch(training_data, eta=1.0)
+    end_loss = loss()
+
+    assert end_loss < start_loss
+
+
+def test_sample_order_does_not_change_predictions():
+    network = Network([2, 3, 2], seed=42)
+    samples = [
+        np.array([[0.1], [0.2]]),
+        np.array([[0.3], [0.4]]),
+        np.array([[0.5], [0.6]]),
+    ]
+    initial_predictions = [network.forward(x) for x in samples]
+    shuffled_samples = [samples[2], samples[0], samples[1]]
+    shuffled_predictions = [network.forward(x) for x in shuffled_samples]
+    np.testing.assert_allclose(shuffled_predictions[1], initial_predictions[0])
+    np.testing.assert_allclose(shuffled_predictions[2], initial_predictions[1])
+    np.testing.assert_allclose(shuffled_predictions[0], initial_predictions[2])
