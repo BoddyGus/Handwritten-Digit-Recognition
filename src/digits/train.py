@@ -9,11 +9,23 @@ def one_hot(label):
     target[int(label)] = 1.0
     return target
 
-def prepare_data_for_training(path):
-    (images, labels), _, _ = load_data(path)
+def prepare_data(path, dataset="training"):
+    training_data, validation_data, test_data = load_data(path)
+
+    if dataset == "training":
+        images, labels = training_data
+    elif dataset == "validation":
+        images, labels = validation_data
+    elif dataset == "test":
+        images, labels = test_data
+    else:
+        raise ValueError("Unknown dataset")
     images = np.asarray(images, dtype=float)
     labels = np.asarray(labels)
-    return [(images[index].reshape(784, 1), one_hot(labels[index])) for index in range(len(images))]
+    return [
+        (images[index].reshape(784, 1), one_hot(labels[index]))
+        for index in range(len(images))
+    ]
 
 def accuracy(network, data):
     correct = 0
@@ -34,7 +46,9 @@ def avg_loss(network, data):
 
 
 def main():
-    training_data = prepare_data_for_training("data/mnist.pkl.gz",)
+    training_data = prepare_data("data/mnist.pkl.gz", "training")
+    validation_data = prepare_data("data/mnist.pkl.gz", "validation")
+    test_data = prepare_data("data/mnist.pkl.gz", "test")
     network = Network([784, 30, 10], seed=42)
     epochs = 10
     mini_batch_size = 64
@@ -46,13 +60,26 @@ def main():
         for start in range(0, len(shuffled_data), mini_batch_size):
             mini_batch = shuffled_data[start:start + mini_batch_size]
             network.update_mini_batch(mini_batch,lr)
-        epoch_loss = avg_loss(network, training_data)
-        epoch_accuracy = accuracy(network, training_data)
+        # Evaluate training data
+        train_loss = avg_loss(network, training_data)
+        train_accuracy = accuracy(network, training_data)
+        # Evaluate validation data
+        validation_loss = avg_loss(network, validation_data)
+        validation_accuracy = accuracy(network, validation_data)
         print(
             f"Epoch {epoch + 1}/{epochs}: "
-            f"loss={epoch_loss:.4f}, "
-            f"accuracy={epoch_accuracy:.2%}"
+            f"train_loss={train_loss:.4f}, "
+            f"train_accuracy={train_accuracy:.2%}, "
+            f"validation_loss={validation_loss:.4f}, "
+            f"validation_accuracy={validation_accuracy:.2%}"
         )
-
+    # Final evaluation on completely unseen test data
+    test_loss = avg_loss(network, test_data)
+    test_accuracy = accuracy(network, test_data)
+    print(
+        f"\nFinal test performance: "
+        f"loss={test_loss:.4f}, "
+        f"accuracy={test_accuracy:.2%}"
+    )
 if __name__ == "__main__":
     main()
