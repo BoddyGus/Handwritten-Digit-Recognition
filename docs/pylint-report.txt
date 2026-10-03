@@ -1,0 +1,22 @@
+************* Module digits.network
+src/digits/network.py:4:0: C0301: Line too long (124/100) (line-too-long)
+src/digits/network.py:90:0: C0325: Unnecessary parens after '=' keyword (superfluous-parens)
+src/digits/network.py:92:0: C0325: Unnecessary parens after '=' keyword (superfluous-parens)
+src/digits/network.py:115:0: C0301: Line too long (132/100) (line-too-long)
+src/digits/network.py:129:0: C0305: Trailing newlines (trailing-newlines)
+src/digits/network.py:60:4: R0914: Too many local variables (16/15) (too-many-locals)
+src/digits/network.py:60:4: R0915: Too many statements (23/20) (too-many-statements)
+src/digits/network.py:106:12: W0622: Redefining built-in 'id' (redefined-builtin)
+src/digits/network.py:102:12: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+src/digits/network.py:106:8: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+src/digits/network.py:110:4: C0103: Method name "SGD" doesn't conform to snake_case naming style (invalid-name)
+************* Module digits.train
+src/digits/train.py:34:0: C0301: Line too long (101/100) (line-too-long)
+src/digits/train.py:85:0: C0304: Final newline missing (missing-final-newline)
+src/digits/train.py:48:0: R0914: Too many local variables (18/15) (too-many-locals)
+************* Module digits.mnist
+src/digits/mnist.py:21:0: C0304: Final newline missing (missing-final-newline)
+
+------------------------------------------------------------------
+Your code has been rated at 9.06/10 (previous run: 9.06/10, +0.00)
+
