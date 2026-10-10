@@ -169,14 +169,7 @@ network is updated with four identical copies of the same example.
 
 The expected updates are equal because:
 
-$$
-\frac{1}{4}
-\left(
-\nabla C+\nabla C+\nabla C+\nabla C
-\right)
-=
-\nabla C
-$$
+(1/4) × (∇C + ∇C + ∇C + ∇C) = ∇C
 
 The final weights and biases of both networks are compared.
 
