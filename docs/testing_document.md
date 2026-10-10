@@ -171,11 +171,12 @@ The expected updates are equal because:
 
 $$
 \frac{1}{4}
-(\nabla C+\nabla C+\nabla C+\nabla C)
+\left(
+\nabla C+\nabla C+\nabla C+\nabla C
+\right)
 =
 \nabla C
 $$
-
 The final weights and biases of both networks are compared.
 
 This test detects whether the gradients are divided by the mini-batch size. Without
