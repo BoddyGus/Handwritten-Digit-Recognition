@@ -129,6 +129,10 @@ of hidden layers, hidden neurons, learning rates, batch sizes, and epochs would 
 
 I have used GPT-5.5 as an assistant during my work on the project. It helped me fix some of the isolated errors in specific functions, create dummy data for some of the unit tests, and check the spelling and grammar of the porject reports.
 
+I also used GPT-5.5 to help formulate and organize my thoughts and improve the
+clarity of explanations in the project documentation, including the
+implementation and testing documents.
+
 The implementation, algorithmic decisions, testing, and final verification were done by me.
 
 
