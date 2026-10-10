@@ -175,3 +175,58 @@ def test_sample_order_does_not_change_predictions():
     assert shuffled_predictions[1] == pytest.approx(initial_predictions[0])
     assert shuffled_predictions[2] == pytest.approx(initial_predictions[1])
     assert shuffled_predictions[0] == pytest.approx(initial_predictions[2])
+
+def test_backpropagation_matches_finite_difference_gradients():
+    network = Network([3, 4, 2], seed=42)
+    x = np.array([
+        [0.2],
+        [0.5],
+        [0.8]
+    ])
+    target = np.array([
+        [1.0],
+        [0.0]
+    ])
+    analytical_b, analytical_w = network.backpropagation(x, target)
+    epsilon = 1e-5
+    def loss():
+        return cross_entropy(network.forward(x),target)
+    for layer_id, weight_matrix in enumerate(network.weights):
+        for id in np.ndindex(weight_matrix.shape):
+            initial_value = weight_matrix[id]
+            weight_matrix[id] = initial_value + epsilon
+            loss_plus = loss()
+            weight_matrix[id] = initial_value - epsilon
+            loss_minus = loss()
+            weight_matrix[id] = initial_value
+            numerical_gradient = (
+                loss_plus - loss_minus
+            ) / (2.0 * epsilon)
+            np.testing.assert_allclose(
+                analytical_w[layer_id][id],
+                numerical_gradient,
+                rtol=1e-5,
+                atol=1e-7,
+            )
+
+    for layer_id, bias_vector in enumerate(network.biases):
+        for id in np.ndindex(bias_vector.shape):
+            initial_value = bias_vector[id]
+            bias_vector[id] = initial_value + epsilon
+            loss_plus = loss()
+
+            bias_vector[id] = initial_value - epsilon
+            loss_minus = loss()
+
+            bias_vector[id] = initial_value
+
+            numerical_gradient = (
+                loss_plus - loss_minus
+            ) / (2.0 * epsilon)
+
+            np.testing.assert_allclose(
+                analytical_b[layer_id][id],
+                numerical_gradient,
+                rtol=1e-5,
+                atol=1e-7,
+            )
