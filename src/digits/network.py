@@ -107,7 +107,7 @@ class Network:
             self.weights[id] -= eta * nabla_w[id] / batch_size
             self.biases[id] -= eta * nabla_b[id] / batch_size
 
-    def SGD(self, training_data, epochs, mini_batch_size, eta, test_data=None):
+    def SGD(self, training_data, epochs, mini_batch_size, eta, validation_data=None):
         """Network training using mini-batch SGD"""
         training_data = list(training_data)
         for epoch in range(epochs):
@@ -115,11 +115,13 @@ class Network:
             mini_batches = [shuffled_data[start:start + mini_batch_size] for start in range(0, len(shuffled_data), mini_batch_size)]
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
-            if test_data is not None:
-                test_accuracy = self.evaluate(test_data) / len(test_data)
+            if validation_data is not None:
+                validation_loss = self.evaluate_loss(validation_data)
+                validation_accuracy = self.evaluate_accuracy(validation_data)
                 print(
                     f"Epoch {epoch + 1}: "
-                    f"test accuracy={test_accuracy:.2%}"
+                    f"validation loss={validation_loss:.4f}, "
+                    f"validation accuracy={validation_accuracy:.2%}"
                 )
             else:
                 print(f"Epoch {epoch + 1} complete")
@@ -130,4 +132,20 @@ class Network:
             pred = np.argmax(self.forward(x))
             correct += int(pred == label)
         return correct
-
+    def evaluate_accuracy(self, data):
+        """Returns classification accuracy for one-hot/integer labels"""
+        correct = 0
+        for x, target in data:
+            pred = np.argmax(self.forward(x))
+            if np.asarray(target).ndim > 0:
+                label = np.argmax(target)
+            else:
+                label = int(target)
+            correct += int(pred == label)
+        return correct / len(data)
+    def evaluate_loss(self, data):
+        """Returns the average cross-entropy loss"""
+        losses = []
+        for x, target in data:
+            losses.append(cross_entropy(self.forward(x), target))
+        return float(np.mean(losses))

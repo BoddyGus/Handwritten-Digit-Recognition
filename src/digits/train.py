@@ -54,14 +54,9 @@ def main():
         epochs=10,
         mini_batch_size=64,
         eta=1.0,
-        test_data=test_data,
+        validation_data=validation_data
     )
-    validation_loss = avg_loss(network, validation_data)
-    validation_accuracy = accuracy(network, validation_data)
-
-    test_accuracy = network.evaluate(test_data) / len(test_data)
-    print(f"Validation loss: {validation_loss:.4f}")
-    print(f"Validation accuracy: {validation_accuracy:.2%}")
+    test_accuracy = network.evaluate_accuracy(test_data)
     print(f"Test accuracy: {test_accuracy:.2%}")
 if __name__ == "__main__":
     main()
