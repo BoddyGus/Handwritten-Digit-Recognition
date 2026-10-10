@@ -230,3 +230,30 @@ def test_backpropagation_matches_finite_difference_gradients():
                 rtol=1e-5,
                 atol=1e-7,
             )
+
+def test_update_mini_batch_averages_gradients():
+    single_network = Network([2, 3, 2], seed=42)
+    batch_network = Network([2, 3, 2], seed=42)
+    sample = (
+        np.array([[0.2], [0.7]]),
+        np.array([[1.0], [0.0]]),
+    )
+    single_network.update_mini_batch(
+        [sample],
+        eta=0.1,
+    )
+    batch_network.update_mini_batch(
+        [sample, sample, sample, sample],
+        eta=0.1,
+    )
+    for single_weight, batch_weight in zip(
+        single_network.weights,
+        batch_network.weights,
+    ):
+        np.testing.assert_allclose(single_weight,batch_weight)
+
+    for single_bias, batch_bias in zip(
+        single_network.biases,
+        batch_network.biases,
+    ):
+        np.testing.assert_allclose(single_bias, batch_bias)
