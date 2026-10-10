@@ -177,11 +177,11 @@ $$
 =
 \nabla C
 $$
+
 The final weights and biases of both networks are compared.
 
 This test detects whether the gradients are divided by the mini-batch size. Without
 the division, the update for the four-example batch would be four times larger.
-
 ### Parameter Updates and Training
 
 The tests verify that:
