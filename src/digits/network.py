@@ -116,9 +116,13 @@ class Network:
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
             if test_data is not None:
-                print(f"Epoch {epoch}: {self.evaluate(test_data)} / {len(test_data)}")
+                test_accuracy = self.evaluate(test_data) / len(test_data)
+                print(
+                    f"Epoch {epoch + 1}: "
+                    f"test accuracy={test_accuracy:.2%}"
+                )
             else:
-                print(f"Epoch {epoch} complete")
+                print(f"Epoch {epoch + 1} complete")
     def evaluate(self, test_data):
         """Returns how many correctly classified examples there are"""
         correct = 0
