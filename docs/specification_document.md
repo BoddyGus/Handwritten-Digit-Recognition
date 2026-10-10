@@ -60,25 +60,112 @@ The main data structures are going to be NumPy arrays. Matrices for the image da
 
 ## Time and Space Complexity
 
-Let us define some variables for simplicity:
-1. $N$  - the number of training images.
-2. $K$ = 784 is the number of input values per image.
-3. $L$ - the number of neurons in one hidden layer.
+Let us define the following variables:
 
-For the implemented network, forward propagation for one image has time complexity
-$O(KL + L \cdot 10)$, where the first term comes from the input-to-hidden matrix multiplication and the second term comes from the hidden-to-output matrix multiplication.
+1. $N$ is the number of training images.
+2. $K=784$ is the number of input values per image.
+3. $L$ is the number of neurons in the hidden layer.
+4. $B$ is the mini-batch size.
+5. $E$ is the number of training epochs.
+6. $M$ is the number of images used for evaluation.
 
-Backpropagation performs matrix multiplications of the same dimensions in reverse order, so its time complexity is also $O(KL + L \cdot 10)$ for one image.
+### Time Complexity
 
-If the network is trained for $E$ epochs with the use of all $N$ training images, the total training time would be $O(E N (KL + L \cdot 10))$.
+For the implemented network, forward propagation for one image has time
+complexity
 
-The space complexity of weights and biases is approximately $O(KL + L \cdot 10)$.
+$$
+O(KL + L \cdot 10).
+$$
 
-Now, if all images that are used for training are stored in memory, then the dataset would require $O(NK)$ space. So the total space complexity would be:
-$O(NK + KL + L \cdot 10).$
+The first term comes from the matrix multiplication between the input layer and
+the hidden layer. The second term comes from the matrix multiplication between
+the hidden layer and the output layer.
 
-The current implementation stores the complete training dataset in memory. During backpropagation, it also stores activations, weighted inputs, and gradient arrays. These additional arrays depend on the network size and do not change the dominant dataset term when N is large.
+Backpropagation performs matrix multiplications of the same dimensions in reverse
+order. Therefore, its time complexity for one image is also
 
+$$
+O(KL + L \cdot 10).
+$$
+
+The sigmoid function applies one operation to each input value. For $n$ input
+values, its time complexity is
+
+$$
+O(n).
+$$
+
+The softmax and cross-entropy functions process all 10 output values. Their time
+complexity is
+
+$$
+O(10),
+$$
+
+which is $O(C)$ if $C$ denotes the number of output classes.
+
+The method `update_mini_batch` calculates gradients separately for every example
+in a mini-batch. Therefore, updating one mini-batch has time complexity
+
+$$
+O(B(KL + L \cdot 10)).
+$$
+
+All $N$ training images are processed during one epoch. Therefore, training for
+$E$ epochs has time complexity
+
+$$
+O(EN(KL + L \cdot 10)).
+$$
+
+Evaluating the network on $M$ images requires one forward pass for each image.
+Therefore, evaluation has time complexity
+
+$$
+O(M(KL + L \cdot 10)).
+$$
+
+The same complexity applies when calculating the average loss or accuracy,
+because both operations require a forward pass for every evaluated image.
+
+Loading and preprocessing $N$ images with $K$ pixel values each has time
+complexity
+
+$$
+O(NK).
+$$
+
+### Space Complexity
+
+The weights between the input and hidden layers contain $KL$ values. The weights
+between the hidden and output layers contain $L \cdot 10$ values. Therefore, the
+space complexity of the network parameters is
+
+$$
+O(KL + L \cdot 10).
+$$
+
+The biases require $O(L+10)$ additional space, which is included in the previous
+bound.
+
+If all $N$ training images are stored in memory, the dataset requires
+
+$$
+O(NK)
+$$
+
+space.
+
+During backpropagation, the implementation stores activations, weighted inputs,
+and gradient arrays. These arrays depend on the network size and do not change
+the dominant dataset term when $N$ is large.
+
+Therefore, the total space complexity is approximately
+
+$$
+O(NK + KL + L \cdot 10).
+$$
 
 ## Sources that will be used
 
