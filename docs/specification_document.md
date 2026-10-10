@@ -6,7 +6,7 @@ This specification document contains the description of my project for the Unive
 
 The topic that I have chosen for my project is Handwritten Digit Recognition. I make use of the MNIST dataset, which contains images in grayscale format of digits from 0 to 9 (handwritten). Each of the images is represented by 784 numerical pixel values (28 x 28 pixels).
 
-The project will be implemented in Python (also the only languages I am proficient are C++ and Python). I will make use of NumPy in order to implement the main machine learning algorithms and all the work with numbers myself. In particular, I plan to implement a feed-forward neural network and the backpropagation algorithm which will be used to train the network. I will run the training on the Roihu cluster since training a neural network over the whole MNIST dataset can require a lot of computation as well as well as to gain experience of taking advantage of cluster's resources.
+The project is implemented in Python. I am also proficient in C++. I will make use of NumPy in order to implement the main machine learning algorithms and all the work with numbers myself. I implemented a feed-forward neural network and the backpropagation algorithm used to train it.
 
 To manage the Python project, dependencies and virtual environment, I will use Poetry (recommendedation from course materials). The file `pyproject.toml` will contain the defined dependencies, and Poetry will create a lock file which would contain exact dependency versions. In order to build the project as a Python package one would have to run `poetry build`.
 
@@ -25,15 +25,15 @@ The program will receive the MNIST dataset as input, which consists of:
 
 1. grayscale images of handwritten digits;
 2. labels identifying the correct digit for each of the images;
-3. separate training and test data.
+3. separate training, validation, and test data.
 
-As mentioned before, each image is represented by 784 numerical pixel values (28 X 28 pixels). They could be normalized to be in between 0 and 1.
+As mentioned before, each image is represented by 784 numerical pixel values (28 X 28 pixels). The dataset used by this project already contains pixel values scaled approximately to the interval [0,1].
 
 The labels are integers in between 0 and 9. During the training the labels can be represented using one-hot encoding.
 
-Also the program will receive configuration parametrs such as the number of hidden layers, the number of neurons in each layer, the learning rate, the random seed, the batch size and the number of training epochs.
+The program will receive configuration parameters such as the network architecture, including the number of hidden layers and neurons in each layer, the learning rate, the random seed, the batch size, and the number of training epochs.
 
-Training images and labels will be used to calculate predictions and errors. After that, backpropogation algorithm will use the losses to calculate gradients and update the weights and biases. The test portion of images and labels won't be used in training, but will be used only for evaluation accuracy of model's predictions.
+Training images and labels are used to calculate predictions and losses. The backpropagation algorithm calculates gradients, and mini-batch gradient descent uses them to update the weights and biases. The validation data is used to monitor the model during training, while the test data is not used during training and is reserved for the final evaluation.
 
 ## Algorithms and Data Structures
 
@@ -46,30 +46,29 @@ The main algorithms and methods are the following:
 5. Softmax output and cross-entropy loss calculations;
 6. Backpropagation;
 7. Gradient descent (mini-batch version SGD);
-8. Classsification and accuracy calculation;
+8. Classification and accuracy calculation;
 9. Evaluation
 
-The neural network will consist of an input layer with 784 input values, two or more hidden layers and finally, an output layer with 10 values (probabilities for each digit class 0-9).
+The implemented network consists of an input layer with 784 values, one hidden layer with 30 neurons, and an output layer with 10 values. (probabilities for each digit class 0-9).
 
-An activavtion function ReLU or GELU will be used inside the hidden layers. The output layer will have a softmax function so that its outputs could be treated as probabilities. The cross-entropy loss will measure how different the predictions are from the correct labels.
+The sigmoid activation function is used in the hidden layer. The output layer is linear and produces logits. The softmax function converts these logits into class probabilities. The cross-entropy loss will measure how different the predictions are from the correct labels.
 
-Backpropagation makes use of the chain rule of differentiation to calculate the contributions of each weight and bias to the prediction error. Then SGD (mini-batch gradient descent) will update the parameters using gradients we got.
+Backpropagation uses the chain rule of differentiation to calculate the gradients of the loss with respect to each weight and bias. Mini-batch stochastic gradient descent then updates the parameters using the calculated gradients.
 
 
-The main data structures are going to be NumPy arrays. Matrices for the image data and the weights of each neural-network layer. Then vectors for biases of each layer and arrays for activations and loss gradients. The batches will contain subsets of the training data.
+The main data structures are going to be NumPy arrays. Matrices for the image data and the weights of each neural-network layer. Then vectors for biases of each layer and arrays for activations and loss gradients. The training data is shuffled and divided into mini-batches, and the parameters are updated after processing each mini-batch.
 
 ## Time and Space Complexity
 
 Let us define some variables for simplicity:
-1. $N$  - the number of training images,
-2. $K$ = 784 - the number of input values per image ()
+1. $N$  - the number of training images.
+2. $K$ = 784 is the number of input values per image.
 3. $L$ - the number of neurons in one hidden layer.
 
+For the implemented network, forward propagation for one image has time complexity
+$O(KL + L \cdot 10)$, where the first term comes from the input-to-hidden matrix multiplication and the second term comes from the hidden-to-output matrix multiplication.
 
-Forward propagation is done through matrix multiplications, which have a complexity of $O(KL + L \cdot 10)$ (for one image).
-
-Backpropagation's matrix operations are similar, so it has the same complexity.
-
+Backpropagation performs matrix multiplications of the same dimensions in reverse order, so its time complexity is also $O(KL + L \cdot 10)$ for one image.
 
 If the network is trained for $E$ epochs with the use of all $N$ training images, the total training time would be $O(E N (KL + L \cdot 10))$.
 
@@ -77,6 +76,8 @@ The space complexity of weights and biases is approximately $O(KL + L \cdot 10)$
 
 Now, if all images that are used for training are stored in memory, then the dataset would require $O(NK)$ space. So the total space complexity would be:
 $O(NK + KL + L \cdot 10).$
+
+The current implementation stores the complete training dataset in memory. During backpropagation, it also stores activations, weighted inputs, and gradient arrays. These additional arrays depend on the network size and do not change the dominant dataset term when N is large.
 
 
 ## Sources that will be used
@@ -93,12 +94,12 @@ $O(NK + KL + L \cdot 10).$
 
 ## Core of the Project
 
-The core of the project is to implement and train a simple feed-forward neural networkk that is able to classify handwritten digits from images. The main algorithms are forward- and backpropagation, gradient descent. The process consists of:
+The core of the project is to implement and train a simple feed-forward neural network that is able to classify handwritten digits from images. The main algorithms are forward propagation, backpropagation, and mini-batch stochastic gradient descent. The process consists of:
 1. forward propagation (to get a prediction);
-2. comparing prediction with the correct label using loss function
-3. backpropagation to calculate gradients and biases;
-4. gradient descent to update gradients and biases to reduce the error
+2. calculating the cross-entropy loss by comparing the predicted probabilities with the correct one-hot label
+3. backpropagation to calculate gradients with respect to the weights and biases
+4. gradient descent to update the weights and biases and reduce the loss
 
-This process will be repeated for several epochs. After that trained network is tested using test images and their correct labels.
+This process will be repeated for several epochs. After training, the network is evaluated on the separate test images and their labels.
 
-Displaying results will be part of the project. However, main focud will be on implementation and understanding the neural-network training algorithm.
+Displaying results and loading the dataset are supporting parts of the project. The main focus is the implementation and understanding of forward propagation, backpropagation, loss calculation, and parameter updates.
