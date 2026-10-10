@@ -1,42 +1,15 @@
 # Handwritten-Digit-Recognition
 
-## Requirements
+This project implements a feed-forward neural network from scratch using Python and
+NumPy. The network is trained to classify handwritten digits from the MNIST dataset.
 
-- Python 3.14 or newer
-- Poetry
+The implementation includes forward propagation, sigmoid activation, softmax,
+cross-entropy loss, backpropagation, mini-batch gradient descent, and stochastic
+gradient descent.
 
-## Installing the Project
+For installation and usage instructions, see the
+[User Guide](docs/user_guide.md).
 
-Clone the repository and enter its directory:
-
-```bash
-git clone https://github.com/BoddyGus/Handwritten-Digit-Recognition.git
-cd Handwritten-Digit-Recognition
-```
-
-Install the project dependencies:
-
-```bash
-poetry install
-```
-
-## Running Tests
-
-Run all tests from the project root:
-
-```bash
-poetry run pytest
-```
-
-Run only the network tests:
-
-```bash
-poetry run pytest src/tests/test_network.py
-```
-
-## Running Training
-
-Run the training from the project root:
-```bash
-poetry run python -m digits.train
-```
+For a detailed description of the project's goals, algorithms, inputs, and planned
+implementation, see the
+[Specification Document](docs/specification_document.md).
