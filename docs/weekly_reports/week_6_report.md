@@ -1,0 +1,3 @@
+This week, I finished most of my project. I completed the testing document, implementation document, and user guide. I also fixed issues in the specification document to keep it up to date. Regarding the code, I fixed issues in `train.py` and added more tests to examine backpropagation more closely. I started using `Network.SGD` instead of repeating the training loop explicitly. I also changed how the training data is prepared and avoided unnecessary one-hot encoding for validation and test data. Everything is clear to me so far. My remaining task is to improve the test coverage beyond the current 83%.
+
+I spent approximately 8 hours on the project this week.
