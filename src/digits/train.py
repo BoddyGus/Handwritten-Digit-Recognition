@@ -24,13 +24,14 @@ def prepare_data(path, dataset="training", one_hot_labels=True):
     if one_hot_labels:
         labels = [one_hot(label) for label in labels]
     return [
-        (images[index].reshape(784, 1),labels[index]) for index in range(len(images))
+        (images[index].reshape(784, 1), labels[index])
+        for index in range(len(images))
     ]
 def accuracy(network, data):
     correct = 0
     for image, target in data:
         pred = np.argmax(network.forward(image))
-        correct_label = np.argmax(target) # returns the same same class as np.argmax(softmax(logits))
+        correct_label = np.argmax(target)
 
         correct += int(pred == correct_label)
     return correct / len(data)
@@ -49,7 +50,7 @@ def main():
     validation_data = prepare_data("data/mnist.pkl.gz", "validation", one_hot_labels=True)
     test_data = prepare_data("data/mnist.pkl.gz", "test", one_hot_labels=False)
     network = Network([784, 30, 10], seed=42)
-    network.SGD(
+    network.sgd(
         training_data,
         epochs=10,
         mini_batch_size=64,

@@ -1,7 +1,7 @@
 import numpy as np
 
 def sigmoid(z):
-    """A sigmoid activation function (numerically stable version) applied for each value in NumPy array (z) independently"""
+    """Apply a numerically stable sigmoid element by element."""
     z = np.asarray(z, dtype=float)
     result = np.empty_like(z)
     pos_values = z >= 0
@@ -69,10 +69,11 @@ class Network:
         for layer_id, (weight, bias) in enumerate(zip(self.weights, self.biases)):
             z = weight @ activation + bias
             weighted_inputs.append(z)
-            if layer_id < len(self.weights) - 1:
-                activation = sigmoid(z)
-            else:
-                activation = z
+            activation = (
+                sigmoid(z)
+                if layer_id < len(self.weights) - 1
+                else z
+            )
             activations.append(activation)
 
         # Error of an output for softmax + cross-entropy
@@ -84,12 +85,11 @@ class Network:
 
         # Caclulating hidden-layer errors
         for layer_id in range(2, len(self.weights) + 1):
-            z = weighted_inputs[-layer_id]
             hidden_activation = activations[-layer_id]
             sigmoid_derivative = hidden_activation * (1.0 - hidden_activation)
-            delta = (self.weights[-layer_id + 1].T @ delta * sigmoid_derivative)
+            delta = self.weights[-layer_id + 1].T @ delta * sigmoid_derivative
             nabla_b[-layer_id] = delta
-            nabla_w[-layer_id] = (delta @ activations[-layer_id - 1].T)
+            nabla_w[-layer_id] = delta @ activations[-layer_id - 1].T
 
         return nabla_b, nabla_w
 
@@ -103,16 +103,24 @@ class Network:
                 nabla_b[index] += delta_b[index]
                 nabla_w[index] += delta_w[index]
         batch_size = len(mini_batch)
-        for id in range(len(self.weights)):
-            self.weights[id] -= eta * nabla_w[id] / batch_size
-            self.biases[id] -= eta * nabla_b[id] / batch_size
+        for index, (weight, bias, weight_gradient, bias_gradient) in enumerate(
+            zip(self.weights, self.biases, nabla_w, nabla_b)
+        ):
+            self.weights[index] = weight - eta * weight_gradient / batch_size
+            self.biases[index] = bias - eta * bias_gradient / batch_size
 
-    def SGD(self, training_data, epochs, mini_batch_size, eta, validation_data=None):
+    def sgd(self, training_data, epochs, mini_batch_size, eta, validation_data=None):
         """Network training using mini-batch SGD"""
         training_data = list(training_data)
         for epoch in range(epochs):
-            shuffled_data = [training_data[id] for id in self.rng.permutation(len(training_data))]
-            mini_batches = [shuffled_data[start:start + mini_batch_size] for start in range(0, len(shuffled_data), mini_batch_size)]
+            shuffled_data = [
+                training_data[index]
+                for index in self.rng.permutation(len(training_data))
+            ]
+            mini_batches = [
+                shuffled_data[start:start + mini_batch_size]
+                for start in range(0, len(shuffled_data), mini_batch_size)
+            ]
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
             if validation_data is not None:

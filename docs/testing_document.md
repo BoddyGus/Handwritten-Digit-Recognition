@@ -218,6 +218,21 @@ tests remain fast and independent of the real data file.
 Dummy data and a dummy network with predefined predictions are used so that the
 expected results are deterministic.
 
+### Network Evaluation Functions
+
+The evaluation methods in `network.py` are also tested:
+
+- `test_evaluate_counts_correct_predictions` checks that `evaluate` returns the
+  correct number of classified examples.
+- `test_evaluate_accuracy_accepts_one_hot_labels` checks accuracy with one-hot
+  encoded labels.
+- `test_evaluate_accuracy_accepts_integer_labels` checks accuracy with integer
+  labels.
+- `test_evaluate_loss` checks that the average cross-entropy loss is finite and
+  positive.
+- `test_sgd_with_validation_data` checks that SGD evaluates validation loss and
+  accuracy after an epoch.
+
 ## Test Inputs
 
 The tests use:
@@ -296,14 +311,12 @@ Name                     Stmts   Miss  Cover   Missing
 ------------------------------------------------------
 src/digits/__init__.py       0      0   100%
 src/digits/mnist.py         15      0   100%
-src/digits/network.py      105     20    81%
-src/digits/train.py         44      8    82%
+src/digits/network.py      105      0   100%
+src/digits/train.py         44      8    82%   48-60, 62
 ------------------------------------------------------
-TOTAL                      164     28    83%
+TOTAL                      164      8    95%
 ```
-In total, 136 of 164 executable statements were covered by the tests. The total
-coverage was therefore 83%. The uncovered lines were mainly related to training
-and evaluation branches that were not exercised by the current unit tests.
+Overall, 156 of 164 executable statements were covered. The complete network.py and mnist.py modules have 100% coverage. The remaining uncovered lines are in train.py and belong mainly to the main() training entry point. The unit tests do not run the full MNIST training process, because that would make the tests slower and dependent on the complete dataset.
 ## Empirical Results
 
 The training program prints validation loss and validation accuracy after each

@@ -112,7 +112,7 @@ def test_sgd_updates_weights():
         (np.array([[0.8], [0.1]]), np.array([[0.0], [1.0]])),
     ]
     old_weights = [weight.copy() for weight in network.weights]
-    network.SGD(training_data, epochs=2, mini_batch_size=1, eta=0.1)
+    network.sgd(training_data, epochs=2, mini_batch_size=1, eta=0.1)
     assert any(not np.allclose(old, new) for old, new in zip(old_weights, network.weights))
 
 def test_forward_output_shape():
@@ -257,3 +257,74 @@ def test_update_mini_batch_averages_gradients():
         batch_network.biases,
     ):
         np.testing.assert_allclose(single_bias, batch_bias)
+
+def test_evaluate_counts_correct_predictions():
+    network = Network([2, 3, 2], seed=42)
+    test_data = [
+        (np.array([[0.1], [0.2]]), 0),
+        (np.array([[0.3], [0.4]]), 1),
+    ]
+    preds = [
+        np.array([[3.0], [1.0]]),
+        np.array([[1.0], [3.0]]),
+    ]
+    pred_index = 0
+    def fake_forward(_):
+        nonlocal pred_index
+        pred = preds[pred_index]
+        pred_index += 1
+        return pred
+    network.forward = fake_forward
+    assert network.evaluate(test_data) == 2
+
+def test_evaluate_accuracy_accepts_one_hot_labels():
+    network = Network([2, 3, 2], seed=42)
+    data = [
+        (
+            np.zeros((2, 1)), np.array([[1.0], [0.0]])
+        )
+    ]
+    def fake_forward(_):
+        return np.array([[3.0], [1.0]])
+    network.forward = fake_forward
+    assert network.evaluate_accuracy(data) == 1.0
+
+def test_evaluate_accuracy_accepts_integer_labels():
+    network = Network([2, 3, 2], seed=42)
+    data = [
+        (np.zeros((2, 1)), 1)
+    ]
+    network.forward = lambda _: np.array([[1.0], [3.0]])
+    assert network.evaluate_accuracy(data) == pytest.approx(1.0)
+
+def test_evaluate_loss():
+    network = Network([2, 3, 2], seed=42)
+    data = [
+        (
+            np.zeros((2, 1)), np.array([[1.0], [0.0]])
+        )
+    ]
+    def fake_forward(_):
+        return np.array([[1.0], [2.0]])
+    network.forward = fake_forward
+    result = network.evaluate_loss(data)
+    assert np.isfinite(result)
+    assert result > 0.0
+
+def test_sgd_with_validation_data(capsys):
+    network = Network([2, 3, 2], seed=42)
+    data = [
+        (
+            np.array([[0.2], [0.7]]), np.array([[1.0], [0.0]])
+        )
+    ]
+    network.sgd(
+        data,
+        epochs=1,
+        mini_batch_size=1,
+        eta=0.1,
+        validation_data=data
+    )
+    output = capsys.readouterr().out
+    assert "validation loss=" in output
+    assert "validation accuracy=" in output

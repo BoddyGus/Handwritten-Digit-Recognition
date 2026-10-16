@@ -16,5 +16,5 @@ src/digits/train.py:62:0: C0304: Final newline missing (missing-final-newline)
 src/digits/mnist.py:21:0: C0304: Final newline missing (missing-final-newline)
 
 ------------------------------------------------------------------
-Your code has been rated at 9.21/10 (previous run: 9.06/10, +0.14)
+Your code has been rated at 9.21/10 (previous run: 9.21/10, +0.00)
 
