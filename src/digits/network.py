@@ -63,12 +63,10 @@ class Network:
         nabla_b = [np.zeros_like(bias) for bias in self.biases]
         activation = x
         activations = [activation]
-        weighted_inputs = []
 
         # Forward pass
         for layer_id, (weight, bias) in enumerate(zip(self.weights, self.biases)):
             z = weight @ activation + bias
-            weighted_inputs.append(z)
             activation = (
                 sigmoid(z)
                 if layer_id < len(self.weights) - 1
@@ -99,9 +97,14 @@ class Network:
         nabla_b = [np.zeros_like(bias) for bias in self.biases]
         for x, y in mini_batch:
             delta_b, delta_w = self.backpropagation(x, y)
-            for index in range(len(nabla_b)):
-                nabla_b[index] += delta_b[index]
-                nabla_w[index] += delta_w[index]
+            for bias_gradient, weight_gradient, delta_b, delta_w in zip(
+                nabla_b,
+                nabla_w,
+                delta_b,
+                delta_w,
+            ):
+                bias_gradient += delta_b
+                weight_gradient += delta_w
         batch_size = len(mini_batch)
         for index, (weight, bias, weight_gradient, bias_gradient) in enumerate(
             zip(self.weights, self.biases, nabla_w, nabla_b)

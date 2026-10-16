@@ -1,7 +1,4 @@
-************* Module digits.network
-src/digits/network.py:60:4: R0914: Too many local variables (16/15) (too-many-locals)
-src/digits/network.py:102:12: C0200: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
 
-------------------------------------------------------------------
-Your code has been rated at 9.88/10 (previous run: 9.75/10, +0.12)
+-------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 9.88/10, +0.12)
 
