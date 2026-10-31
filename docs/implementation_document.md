@@ -8,6 +8,8 @@ The project's structure consists of modules for the neural network, MNIST data l
 
 The file network.py contains the main implementation. The neural network is represented in the Network class in the network.py file. The class is responsible for initializing the parameters, performing forward propagation, calculating gradients using backpropagation, and updating the network parameters during training. Loading of the data and training functionality are implemented in the mnist.py and train.py files, respectively.
 
+Stochastic gradient descent (SGD) updates the network parameters using the gradient calculated from one training example at a time. Mini-batch SGD is a practical variant that divides the training data into small batches and updates the parameters after processing each batch. It provides a compromise between the noisy updates of pure SGD and the expensive updates of full-batch gradient descent. In this project, the SGD method shuffles the training data, divides it into mini-batches, and uses update_mini_batch to average the gradients within each batch before updating the weights and biases. When the mini-batch size is one, the method corresponds to pure SGD.
+
 ## Project Structure
 
 ```text

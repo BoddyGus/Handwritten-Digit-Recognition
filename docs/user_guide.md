@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Python 3.14 or newer
+- Python 3.12 or newer
 - Poetry
 
 ## Installing the Project
