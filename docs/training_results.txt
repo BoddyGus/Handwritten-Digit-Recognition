@@ -1,0 +1,14 @@
+Epoch 1: validation loss=0.3552, validation accuracy=88.62%
+Epoch 2: validation loss=0.1957, validation accuracy=94.13%
+Epoch 3: validation loss=0.1540, validation accuracy=95.60%
+Epoch 4: validation loss=0.1417, validation accuracy=95.97%
+Epoch 5: validation loss=0.1684, validation accuracy=95.05%
+Epoch 6: validation loss=0.1249, validation accuracy=96.32%
+Epoch 7: validation loss=0.1252, validation accuracy=96.43%
+Epoch 8: validation loss=0.1194, validation accuracy=96.69%
+Epoch 9: validation loss=0.1542, validation accuracy=95.41%
+Epoch 10: validation loss=0.1234, validation accuracy=96.43%
+Test accuracy: 95.80%
+real 39.20
+user 34.26
+sys 3.24

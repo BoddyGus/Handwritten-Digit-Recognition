@@ -20,6 +20,7 @@ Handwritten-Digit-Recognition/
 │   ├── specification_document.md
 │   ├── implementation_document.md
 │   ├── testing_document.md
+│   ├── training_results.txt
 │   ├── pylint-report.txt
 │   └── weekly_reports/
 ├── src/
@@ -128,6 +129,44 @@ NumPy matrix multiplication more efficiently.
 possible MNIST accuracy. Improvements such as testing different numbers
 of hidden layers, hidden neurons, learning rates, batch sizes, and epochs would be benefitial.
 
+## Empirical Results
+
+The network was trained and evaluated on the MNIST dataset using the following
+configuration:
+
+| Parameter | Value |
+|---|---:|
+| Network architecture | 784-30-10 |
+| Learning rate ($\eta$) | 1.0 |
+| Mini-batch size | 64 |
+| Number of epochs | 10 |
+| Random seed | 42 |
+
+The validation results were:
+
+| Epoch | Validation loss | Validation accuracy |
+|---:|---:|---:|
+| 1 | 0.3552 | 88.62% |
+| 2 | 0.1957 | 94.13% |
+| 3 | 0.1540 | 95.60% |
+| 4 | 0.1417 | 95.97% |
+| 5 | 0.1684 | 95.05% |
+| 6 | 0.1249 | 96.32% |
+| 7 | 0.1252 | 96.43% |
+| 8 | 0.1194 | 96.69% |
+| 9 | 0.1542 | 95.41% |
+| 10 | 0.1234 | 96.43% |
+
+The final test accuracy was **95.80%**.
+
+The complete training run took **39.20 seconds** of real time. The process
+used **34.26 seconds** of user CPU time and **3.24 seconds** of system CPU
+time.
+
+The complete raw output of the training run is available in
+[training_results.txt](training_results.txt). It contains the validation
+results for all ten epochs, the final test accuracy, and the measured execution
+time.
 ## LLM usage
 
 I have used GPT-5.5 as an assistant during my work on the project. It helped me fix some of the isolated errors in specific functions, create dummy data for some of the unit tests, and check the spelling and grammar of the porject reports.
