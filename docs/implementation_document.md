@@ -35,6 +35,7 @@ Handwritten-Digit-Recognition/
 ├── .gitignore
 ├── poetry.lock
 ├── pyproject.toml
+├── .pylintrc
 └── README.md
 ```
 ## Time and Space Complexity

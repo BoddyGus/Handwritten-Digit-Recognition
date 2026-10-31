@@ -37,8 +37,7 @@ sigmoid(1)  ≈ 0.73105858
 sigmoid(-1) ≈ 0.26894142
 ```
 
-The result is compared with the expected result using
-`numpy.testing.assert_allclose`.
+The result is compared with the expected result using `pytest.approx`.
 
 The function is also tested with extreme values:
 
@@ -127,6 +126,15 @@ The tests verify that:
 - one gradient is returned for every bias vector;
 - every gradient has the same shape as its parameter;
 - all gradient values are finite.
+
+### Real MNIST Training Test
+
+One integration test trains the network for one epoch on the first 2000
+training images from the real MNIST dataset. It then evaluates the network on
+the first 1000 test images and checks that the accuracy is above 80%.
+
+The test is skipped when `data/mnist.pkl.gz` is not available, so unit tests
+remain runnable without downloading the full dataset.
 
 ### Independent Backpropagation Gradient Test
 
@@ -311,12 +319,17 @@ Name                     Stmts   Miss  Cover   Missing
 ------------------------------------------------------
 src/digits/__init__.py       0      0   100%
 src/digits/mnist.py         15      0   100%
-src/digits/network.py      105      0   100%
-src/digits/train.py         44      8    82%   48-60, 62
+src/digits/network.py      100      0   100%
+src/digits/train.py         44      8    82%   78-90, 92
 ------------------------------------------------------
-TOTAL                      164      8    95%
+TOTAL                      159      8    95%
 ```
-Overall, 156 of 164 executable statements were covered. The complete network.py and mnist.py modules have 100% coverage. The remaining uncovered lines are in train.py and belong mainly to the main() training entry point. The unit tests do not run the full MNIST training process, because that would make the tests slower and dependent on the complete dataset.
+Overall, 151 of 159 executable statements were covered. The complete
+mnist.py and network.py modules have 100% coverage. The remaining
+uncovered lines are in train.py and belong to the main() training entry
+point. The tests do not execute the full training workflow through main()
+because that would make the test suite slower and dependent on the complete
+MNIST dataset.
 ## Empirical Results
 
 The training program prints validation loss and validation accuracy after each

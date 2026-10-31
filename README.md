@@ -13,3 +13,12 @@ For installation and usage instructions, see the
 For a detailed description of the project's goals, algorithms, inputs, and planned
 implementation, see the
 [Specification Document](docs/specification_document.md).
+
+For details about the implementation and algorithms, see the
+[Implementation Document](docs/implementation_document.md).
+
+For the testing strategy and test results, see the
+[Testing Document](docs/testing_document.md).
+
+Weekly progress is documented in the
+[Weekly Reports](docs/weekly_reports/).

@@ -3,13 +3,15 @@ import pytest
 
 import gzip
 import pickle
+from pathlib import Path
+from digits.mnist import load_data
 from digits.train import (
     accuracy,
     avg_loss,
     one_hot,
     prepare_data,
+    Network,
 )
-
 
 def create_dummy_mnist_file(path):
     training_data = (
@@ -129,3 +131,34 @@ def test_avg_loss():
     result = avg_loss(FixedNetwork(), data)
     assert np.isfinite(result)
     assert result > 0.0
+
+def test_one_epoch_on_real_mnist():
+    dataset_path = Path("data/mnist.pkl.gz")
+    if not dataset_path.exists():
+        pytest.skip("Real MNIST dataset is not available")
+    training_data, _, test_data = load_data(dataset_path)
+    training_images, training_labels = training_data
+    test_images, test_labels = test_data
+    training_examples = [
+        (
+            np.asarray(image, dtype=float).reshape(784, 1),
+            one_hot(label),
+        )
+        for image, label in zip(training_images[:2000], training_labels[:2000])
+    ]
+    test_examples = [
+        (
+            np.asarray(image, dtype=float).reshape(784, 1),
+            int(label),
+        )
+        for image, label in zip(test_images[:1000], test_labels[:1000])
+    ]
+    network = Network([784, 30, 10], seed=42)
+    network.sgd(
+        training_examples,
+        epochs=1,
+        mini_batch_size=64,
+        eta=3.0,
+    )
+    accuracy_result = network.evaluate_accuracy(test_examples)
+    assert accuracy_result > 0.70
