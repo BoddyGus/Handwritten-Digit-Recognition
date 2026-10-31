@@ -10,6 +10,16 @@ def one_hot(label):
     return target
 
 def prepare_data(path, dataset="training", one_hot_labels=True):
+    """Load and format one MNIST dataset split.
+
+    Args:
+        path: Path to the compressed MNIST dataset.
+        dataset: Dataset split to load.
+        one_hot_labels: Whether to encode labels as column vectors.
+
+    Returns:
+        A list of image-label pairs.
+    """
     training_data, validation_data, test_data = load_data(path)
     if dataset == "training":
         images, labels = training_data
@@ -28,6 +38,15 @@ def prepare_data(path, dataset="training", one_hot_labels=True):
         for index in range(len(images))
     ]
 def accuracy(network, data):
+    """Calculate classification accuracy for a dataset.
+
+    Args:
+        network: Network used to classify the images.
+        data: Image-label pairs.
+
+    Returns:
+        Fraction of correctly classified examples.
+    """
     correct = 0
     for image, target in data:
         pred = np.argmax(network.forward(image))
@@ -37,6 +56,15 @@ def accuracy(network, data):
     return correct / len(data)
 
 def avg_loss(network, data):
+    """Calculate the average cross-entropy loss.
+
+    Args:
+        network: Network used to produce logits.
+        data: Image-label pairs.
+
+    Returns:
+        Average cross-entropy loss.
+    """
     losses = []
     for image, target in data:
         logits = network.forward(image)
@@ -46,6 +74,7 @@ def avg_loss(network, data):
 
 
 def main():
+    """Train the network and print its test accuracy."""
     training_data = prepare_data("data/mnist.pkl.gz", "training", one_hot_labels=True)
     validation_data = prepare_data("data/mnist.pkl.gz", "validation", one_hot_labels=True)
     test_data = prepare_data("data/mnist.pkl.gz", "test", one_hot_labels=False)

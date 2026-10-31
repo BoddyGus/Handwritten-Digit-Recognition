@@ -1,7 +1,15 @@
+"""Neural-network functions and training methods for digit recognition."""
 import numpy as np
 
 def sigmoid(z):
-    """Apply a numerically stable sigmoid element by element."""
+    """Apply a numerically stable sigmoid element by element.
+
+    Args:
+        z: Input value or NumPy array.
+
+    Returns:
+        A NumPy array containing the sigmoid values.
+    """
     z = np.asarray(z, dtype=float)
     result = np.empty_like(z)
     pos_values = z >= 0
@@ -14,13 +22,28 @@ def sigmoid(z):
     return result
 
 def softmax(logits):
-    """Softmax function (numerically stable version) that converts logits into probabilities"""
+    """Softmax function (numerically stable version) that converts logits into probabilities.
+
+    Args:
+        logits: Network output logits.
+
+    Returns:
+        A NumPy array containing probability values.
+    """
     shift_logits = logits - np.max(logits, axis=0, keepdims=True)
     exponentials = np.exp(shift_logits)
     return exponentials / np.sum(exponentials, axis=0, keepdims=True)
 
 def cross_entropy(logits, target):
-    """A softmax cross-entropy function (numerically stable version) for one example """
+    """A softmax cross-entropy function (numerically stable version) for one example.
+
+    Args:
+        logits: Network output logits.
+        target: Target label, represented as a one-hot vector.
+
+    Returns:
+        The cross-entropy loss as a floating-point value.
+    """
     logits = np.asarray(logits, dtype=float)
     target = np.asarray(target, dtype=float)
     maximum = np.max(logits, axis=0, keepdims=True)
@@ -30,7 +53,12 @@ def cross_entropy(logits, target):
     return float(np.squeeze(loss))
 
 class Network:
-    """A small feed-forward network."""
+    """A small feed-forward network.
+
+    Args:
+        layer_sizes: Number of neurons in each network layer.
+        seed: Seed used for reproducible parameter initialization.
+    """
 
     def __init__(self, layer_sizes, seed):
         self.layer_sizes = layer_sizes
@@ -45,7 +73,13 @@ class Network:
         self.biases = [np.zeros((size, 1)) for size in layer_sizes[1:]]
 
     def forward(self, x):
-        """Returns output of the network for one input vector (x)."""
+        """Returns output of the network for one input vector (x).
+        Args:
+            x: Input column vector.
+
+        Returns:
+            The output logits produced by the network.
+        """
         activation = x
         # Use sigmoid function only for hidden layers and not final layer
         for layer_id, (weights, biases) in enumerate(zip(self.weights, self.biases)):
@@ -58,7 +92,14 @@ class Network:
         return activation
 
     def backpropagation(self, x, y):
-        """Returns gradients for one training example"""
+        """Returns gradients for one training example.
+        Args:
+            x: Input column vector.
+            y: One-hot encoded target vector.
+
+        Returns:
+            A tuple containing gradients for the biases and weights.
+        """
         nabla_w = [np.zeros_like(weight) for weight in self.weights]
         nabla_b = [np.zeros_like(bias) for bias in self.biases]
         activation = x
@@ -92,7 +133,11 @@ class Network:
         return nabla_b, nabla_w
 
     def update_mini_batch(self, mini_batch, eta):
-        """Update weights (parameters) using one mini-batch"""
+        """Update weights (parameters) using one mini-batch.
+        Args:
+            mini_batch: A collection of input and target pairs.
+            eta: Learning rate used for the parameter update.
+        """
         nabla_w = [np.zeros_like(weight) for weight in self.weights]
         nabla_b = [np.zeros_like(bias) for bias in self.biases]
         for x, y in mini_batch:
@@ -113,7 +158,15 @@ class Network:
             self.biases[index] = bias - eta * bias_gradient / batch_size
 
     def sgd(self, training_data, epochs, mini_batch_size, eta, validation_data=None):
-        """Network training using mini-batch SGD"""
+        """Network training using mini-batch SGD.
+
+        Args:
+            training_data: Training input and target pairs.
+            epochs: Number of complete passes through the training data.
+            mini_batch_size: Number of examples in each mini-batch.
+            eta: Learning rate used for parameter updates.
+            validation_data: Optional validation input and target pairs.
+        """
         training_data = list(training_data)
         for epoch in range(epochs):
             shuffled_data = [
@@ -137,14 +190,26 @@ class Network:
             else:
                 print(f"Epoch {epoch + 1} complete")
     def evaluate(self, test_data):
-        """Returns how many correctly classified examples there are"""
+        """Returns how many correctly classified examples there are.
+        Args:
+            test_data: Test input and integer-label pairs.
+
+        Returns:
+            The number of correctly classified examples.
+        """
         correct = 0
         for x, label in test_data:
             pred = np.argmax(self.forward(x))
             correct += int(pred == label)
         return correct
     def evaluate_accuracy(self, data):
-        """Returns classification accuracy for one-hot/integer labels"""
+        """Returns classification accuracy for one-hot/integer labels.
+        Args:
+            data: Input and target pairs with one-hot or integer labels.
+
+        Returns:
+            The fraction of correctly classified examples.
+        """
         correct = 0
         for x, target in data:
             pred = np.argmax(self.forward(x))
@@ -155,7 +220,14 @@ class Network:
             correct += int(pred == label)
         return correct / len(data)
     def evaluate_loss(self, data):
-        """Returns the average cross-entropy loss"""
+        """Returns the average cross-entropy loss.
+
+        Args:
+            data: Input and target pairs.
+
+        Returns:
+            The average cross-entropy loss.
+        """
         losses = []
         for x, target in data:
             losses.append(cross_entropy(self.forward(x), target))
